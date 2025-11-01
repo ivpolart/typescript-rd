@@ -1,12 +1,31 @@
+import { z } from 'zod';
 import tasks from '../tasks.json'
 import { Task, Status, Priority } from './dto/Task';
 import { statusDefault, priorityDefault } from './constants';
 
-const tasksList = (tasks as Task[]).map(task => ({
+const TaskSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  description: z.string(),
+  createdAt: z.string().refine(val => !isNaN(Date.parse(val)), "Invalid date"),
+  status: z.enum(["todo", "in_progress", "done"]).optional(),
+  priority: z.enum(["low", "medium", "high"]).optional(),
+  deadline: z.string().refine(val => !isNaN(Date.parse(val)), "Invalid date"),
+});
+
+const TasksArraySchema = z.array(TaskSchema);
+
+let tasksList: Task[];
+try {
+  const parsedTasks = TasksArraySchema.parse(tasks);
+  tasksList = parsedTasks.map(task => ({
     ...task,
     status: task.status || statusDefault,
     priority: task.priority || priorityDefault,
-}));
+  }));
+} catch (err) {
+  tasksList = [];
+}
 
 function getTaskInfo(taskId: number) {
     const taskInfo = tasksList.find(task => (task.id == taskId))
