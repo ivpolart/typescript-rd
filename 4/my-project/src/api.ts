@@ -20,7 +20,7 @@ export async function createTask(task: Omit<Task, "id">) {
       },
       body: JSON.stringify({
         ...task,
-        id: Date.now() // генерируем временный id
+        id: Date.now()
       })
     });
 
