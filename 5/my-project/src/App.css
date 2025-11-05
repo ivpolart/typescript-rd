@@ -1,42 +1,70 @@
 #root {
-  max-width: 1280px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 20px;
+}
+
+.form-block {
+  background: rgba(0, 0, 0, .5);
+  padding: 20px;  
+  border: 1px solid #707070;
+  border-radius: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+  color: #a3a3a3;
+}
+
+.title-block {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
+.field {
+  border: none;
+  padding: 0;
+  margin: 0 0 20px;
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+  label {
+    display: block;
+    text-align: left;
+    font-size: 18px;
   }
-  to {
-    transform: rotate(360deg);
+
+  input, select {
+    background: none;
+    box-sizing: border-box;
+    padding: 10px;
+    width: 100%;
+    display: block;
+    outline: none;
+    border: 1px solid #707070;
+    border-radius: 5px;
+    color: #a3a3a3;
+  }
+
+  select {
+    background-color: rgba(0, 0, 0, 0.01);
+  }
+
+  &.error {
+    color: rgb(196, 14, 14);
+
+    input {
+      border-color: rgb(196, 14, 14);
+    }
+  }
+
+  .error-message {
+    font-size: 14px;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.btn-field {
+    text-align: center;
 }
