@@ -1,55 +1,43 @@
 import { Request, Response } from "express";
-import { taskService } from "../services/task.service";
-import { taskCreateSchema, taskUpdateSchema, taskQuerySchema } from "../validators/task.validator";
+import { Task } from "../models/Task.model";
+import { User } from "../models/User.model";
 
-export const getTasks = (req: Request, res: Response) => {
-  const parsed = taskQuerySchema.safeParse(req.query);
-  if (!parsed.success) {
-    return res.status(400).json(parsed.error);
-  }
-
-  const tasks = taskService.getTasks(parsed.data);
+export const getTasks = async (req: Request, res: Response) => {
+  const tasks = await Task.findAll({ include: [User] });
   res.json(tasks);
 };
 
-export const getTaskById = (req: Request, res: Response) => {
-  const id = Number(req.params.id);
-  const task = taskService.getTaskById(id);
+export const getTaskById = async (req: Request, res: Response) => {
+  const task = await Task.findByPk(req.params.id, {
+    include: [User],
+  });
 
   if (!task) return res.status(404).json({ message: "Task not found" });
 
   res.json(task);
 };
 
-export const createTask = (req: Request, res: Response) => {
-  const parsed = taskCreateSchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res.status(400).json(parsed.error);
+export const createTask = async (req: Request, res: Response) => {
+  try {
+    const task = await Task.create(req.body);
+    res.status(201).json(task);
+  } catch (e) {
+    res.status(400).json({ message: "Invalid data", error: e });
   }
-
-  const task = taskService.createTask(parsed.data);
-  res.status(201).json(task);
 };
 
-export const updateTask = (req: Request, res: Response) => {
-  const id = Number(req.params.id);
-  const parsed = taskUpdateSchema.safeParse(req.body);
+export const updateTask = async (req: Request, res: Response) => {
+  const task = await Task.findByPk(req.params.id);
+  if (!task) return res.status(404).json({ message: "Task not found" });
 
-  if (!parsed.success) {
-    return res.status(400).json(parsed.error);
-  }
-
-  const updated = taskService.updateTask(id, parsed.data);
-  if (!updated) return res.status(404).json({ message: "Task not found" });
-
-  res.json(updated);
+  await task.update(req.body);
+  res.json(task);
 };
 
-export const deleteTask = (req: Request, res: Response) => {
-  const id = Number(req.params.id);
-  const ok = taskService.deleteTask(id);
+export const deleteTask = async (req: Request, res: Response) => {
+  const task = await Task.findByPk(req.params.id);
+  if (!task) return res.status(404).json({ message: "Task not found" });
 
-  if (!ok) return res.status(404).json({ message: "Task not found" });
-
+  await task.destroy();
   res.status(204).send();
 };

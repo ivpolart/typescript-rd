@@ -2,9 +2,9 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import taskRoutes from "./routes/task.routes";
+import db from "./config/database";
 
 const app = express();
-const PORT = 3000;
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -12,11 +12,9 @@ app.use(express.json());
 
 app.use("/tasks", taskRoutes);
 
-app.use((err: unknown, req: any, res: any, next: any) => {
-  console.error(err);
-  res.status(500).json({ message: "Internal server error" });
-});
+export default app; // <-- важно
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+// запускаем отдельно
+if (process.env.NODE_ENV !== "test") {
+  app.listen(3000, () => console.log("Server running"));
+}
